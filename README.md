@@ -1,53 +1,53 @@
-# Elastic stack (ELK) on Docker
+# Docker 上的弹性堆栈 (ELK)
 
 [![Elastic Stack version](https://img.shields.io/badge/Elastic%20Stack-9.2.1-00bfb3?style=flat&logo=elastic-stack)](https://www.elastic.co/blog/category/releases)
 [![Build Status](https://github.com/deviantony/docker-elk/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/deviantony/docker-elk/actions/workflows/ci.yml?query=branch%3Amain)
 
-Run the latest version of the [Elastic stack][elk-stack] with Docker and Docker Compose.
+使用 Docker 和 Docker Compose 运行最新版本的 [Elastic stack][elk-stack]。
 
-It gives you the ability to analyze any data set by using the searching/aggregation capabilities of Elasticsearch and
-the visualization power of Kibana.
+它使您能够使用 Elasticsearch 的搜索/聚合功能来分析任何数据集，
+Kibana 的可视化能力。
 
-Based on the [official Docker images][elastic-docker] from Elastic:
+基于 Elastic 的[官方 Docker 镜像][elastic-docker]：
 
 * [Elasticsearch](https://github.com/elastic/elasticsearch/tree/main/distribution/docker)
 * [Logstash](https://github.com/elastic/logstash/tree/main/docker)
 * [Kibana](https://github.com/elastic/kibana/tree/main/src/dev/build/tasks/os_packages/docker_generator)
 
-Other available stack variants:
+其他可用的堆栈变体：
 
-* [`tls`](https://github.com/deviantony/docker-elk/tree/tls): TLS encryption enabled in Elasticsearch, Kibana (opt in),
-  and Fleet
+* [<<<CODE_117>>>](https://github.com/deviantony/docker-elk/tree/tls)：在 Elasticsearch、Kibana 中启用 TLS 加密（选择加入），
+和舰队
 
-> [!IMPORTANT]
-> [Platinum][subscriptions] features are enabled by default for a [trial][license-mngmt] duration of **30 days**. After
-> this evaluation period, you will retain access to all the free features included in the Open Basic license seamlessly,
-> without manual intervention required, and without losing any data. Refer to the [How to disable paid
-> features](#how-to-disable-paid-features) section to opt out of this behaviour.
-
----
-
-
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/6f67cbc0-ddee-44bf-8f4d-7fd2d70f5217">
-  <img alt="Animated demo" src="https://github.com/user-attachments/assets/501a340a-e6df-4934-90a2-6152b462c14a">
-</picture>
+> [！重要的]
+> 默认情况下启用[白金][订阅]功能，[试用][许可证管理]持续时间为**30天**。后
+> 在此评估期内，您将保留无缝访问 Open Basic 许可证中包含的所有免费功能，
+> 无需人工干预，且不会丢失任何数据。请参阅【如何禁用付费
+> features](#how-to-disable-paid-features) 部分选择退出此行为。
 
 ---
 
-## Philosophy
 
-The main goal of docker-elk is to make the Elastic stack as easy as possible to get into. It is **not a blueprint for a
-production-ready deployment**, but rather a _template_ that promotes tweaking and exploration.
 
-The authors believe in good documentation over elaborate automation. The project's default configuration is purposely
-minimal and unopinionated. The initial setup does not rely on any external dependency, and uses as little scripting as
-necessary to get things up and running.
+<图片>
+<source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/6f67cbc0-ddee-44bf-8f4d-7fd2d70f5217">
+<img alt="动画演示" src="https://github.com/user-attachments/assets/501a340a-e6df-4934-90a2-6152b462c14a">
+</图片>
 
 ---
 
-## Contents
+## 哲学
+
+docker-elk 的主要目标是使 Elastic 堆栈尽可能容易进入。它不是**的蓝图
+生产就绪部署**，而是一个促进调整和探索的_模板_。
+
+作者相信良好的文档胜过复杂的自动化。项目的默认配置是故意的
+最低限度且不持己见。初始设置不依赖于任何外部依赖项，并且使用尽可能少的脚本
+启动并运行所必需的。
+
+---
+
+## 内容
 
 1. [Requirements](#requirements)
    * [Host setup](#host-setup)
@@ -78,111 +78,111 @@ necessary to get things up and running.
 1. [Going further](#going-further)
    * [Plugins and integrations](#plugins-and-integrations)
 
-## Requirements
+## 要求
 
-### Host setup
+### 主机设置
 
-* [Docker Engine][docker-install] version **18.06.0** or newer
-* [Docker Compose][compose-install] version **2.0.0** or newer
-* 1.5 GB of RAM
+* [Docker 引擎][docker-install] 版本 **18.06.0** 或更高版本
+* [Docker Compose][compose-install] 版本 **2.0.0** 或更高版本
+* 1.5 GB 内存
 
-> [!NOTE]
-> Especially on Linux, make sure your user has the [required permissions][linux-postinstall] to interact with the Docker
-> daemon.
+> [！笔记]
+> 特别是在 Linux 上，请确保您的用户具有与 Docker 交互的[所需权限][linux-postinstall]
+> 守护进程。
 
-By default, the stack exposes the following ports:
+默认情况下，堆栈公开以下端口：
 
-* 5044: Logstash Beats input
-* 50000: Logstash TCP input
-* 9600: Logstash monitoring API
-* 9200: Elasticsearch HTTP
-* 9300: Elasticsearch TCP transport
-* 5601: Kibana
+* 5044：Logstash Beats 输入
+* 50000：Logstash TCP 输入
+* 9600：Logstash监控API
+* 9200：Elasticsearch HTTP
+* 9300：Elasticsearch TCP 传输
+* 5601：基巴纳
 
-> [!WARNING]
-> Elasticsearch's [bootstrap checks][bootstrap-checks] were purposely disabled to facilitate the setup of the Elastic
-> stack in development environments. For production setups, we recommend users to set up their host according to the
-> instructions from the Elasticsearch documentation: [Important System Configuration][es-sys-config].
+> [！警告]
+> Elasticsearch 的 [bootstrap 检查][bootstrap-checks] 被故意禁用，以方便 Elastic 的设置
+> 开发环境中的堆栈。对于生产设置，我们建议用户根据以下内容设置其主机
+> Elasticsearch 文档中的说明：[重要系统配置][es-sys-config]。
 
-### Docker Desktop
+### Docker 桌面
 
-#### Windows
+#### 视窗
 
-If you are using the legacy Hyper-V mode of _Docker Desktop for Windows_, ensure that [File
-Sharing][desktop-filesharing] is enabled for the `C:` drive.
+如果您使用的是 _Docker Desktop for Windows_ 的旧版 Hyper-V 模式，请确保 [文件
+共享][桌面文件共享]已启用`C:`驾驶。
 
 #### macOS
 
-The default configuration of _Docker Desktop for Mac_ allows mounting files from `/Users/`, `/Volume/`, `/private/`,
-`/tmp` and `/var/folders` exclusively. Make sure the repository is cloned in one of those locations or follow the
-instructions from the [documentation][desktop-filesharing] to add more locations.
+_Docker Desktop for Mac_ 的默认配置允许从以下位置挂载文件`/Users/`, `/Volume/`, `/private/`,
+`/tmp`和`/var/folders`只。确保存储库已克隆到这些位置之一或遵循
+[文档][桌面文件共享]中的说明添加更多位置。
 
-## Usage
+## 用法
 
-> [!WARNING]
-> You must rebuild the stack images with `docker compose build` whenever you switch branch or update the
-> [version](#version-selection) of an already existing stack.
+> [！警告]
+> 您必须使用以下命令重建堆栈映像`docker compose build`每当你切换分支或更新
+> [version](#version-selection)已经存在的堆栈。
 
-### Bringing up the stack
+### 调出堆栈
 
-Clone this repository onto the Docker host that will run the stack with the command below:
+使用以下命令将此存储库克隆到将运行堆栈的 Docker 主机上：
 
 ```sh
 git clone https://github.com/deviantony/docker-elk.git
 ```
 
-Then, initialize the Elasticsearch users and groups required by docker-elk by executing the command:
+然后，通过执行以下命令初始化 docker-elk 所需的 Elasticsearch 用户和组：
 
 ```sh
 docker compose up setup
 ```
 
-Optionally (but highly recommended), generate encryption keys for Kibana using the following command and copy its output
-to the Kibana configuration file (`kibana/config/kibana.yml`):
+或者（但强烈推荐），使用以下命令生成 Kibana 的加密密钥并复制其输出
+到 Kibana 配置文件（`kibana/config/kibana.yml`):
 
 ```sh
 docker compose up kibana-genkeys
 ```
 
-If everything went well and the setup completed without error, start the other stack components:
+如果一切顺利并且设置完成且没有错误，请启动其他堆栈组件：
 
 ```sh
 docker compose up
 ```
 
-> [!NOTE]
-> You can also run all services in the background (detached mode) by appending the `-d` flag to the above command.
+> [！笔记]
+> 您还可以通过附加以下内容在后台运行所有服务（分离模式）`-d`标记上述命令。
 
-Give Kibana about a minute to initialize, then access the Kibana web UI by opening <http://localhost:5601> in a web
-browser and use the following (default) credentials to log in:
+给 Kibana 大约一分钟的时间来初始化，然后通过在 Web 中打开 <http://localhost:5601> 来访问 Kibana Web UI
+浏览器并使用以下（默认）凭据登录：
 
-* user: *elastic*
-* password: *changeme*
+* 用户：*弹性*
+* 密码：*更改我*
 
-> [!NOTE]
-> Upon the initial startup, the `elastic`, `logstash_internal` and `kibana_system` Elasticsearch users are initialized
-> with the values of the passwords defined in the [`.env`](.env) file (_"changeme"_ by default). The first one is the
-> [built-in superuser][builtin-users], the other two are used by Kibana and Logstash respectively to communicate with
-> Elasticsearch. This task is only performed during the _initial_ startup of the stack. To change users' passwords
-> _after_ they have been initialized, please refer to the instructions in the next section.
+> [！笔记]
+> 初次启动时，`elastic`, `logstash_internal`和`kibana_system`Elasticsearch用户已初始化
+> 与中定义的密码的值[<<<CODE_130>>>](.env)文件（_“changeme”_默认情况下）。第一个是
+> [builtin superuser][builtin-users]，另外两个分别用于Kibana和Logstash进行通信
+> 弹性搜索。此任务仅在堆栈的_初始_启动期间执行。更改用户密码
+> 它们初始化后，请参阅下一节中的说明。
 
-### Initial setup
+### 初始设置
 
-#### Setting up user authentication
+#### 设置用户身份验证
 
-> [!NOTE]
-> Refer to [Security settings in Elasticsearch][es-security] to disable authentication.
+> [！笔记]
+> 请参阅[Elasticsearch 中的安全设置][es-security] 禁用身份验证。
 
-> [!WARNING]
-> Starting with Elastic v8.0.0, it is no longer possible to run Kibana using the bootstrapped privileged `elastic` user.
+> [！警告]
+> 从 Elastic v8.0.0 开始，不再可能使用引导特权运行 Kibana`elastic`用户。
 
-The _"changeme"_ password set by default for all aforementioned users is **unsecure**. For increased security, we will
-reset the passwords of all aforementioned Elasticsearch users to random secrets.
+默认情况下为所有上述用户设置的_“changeme”_密码是**不安全**。为了提高安全性，我们将
+将所有上述 Elasticsearch 用户的密码重置为随机密码。
 
-1. Reset passwords for default users
+1. 重置默认用户的密码
 
-    The commands below reset the passwords of the `elastic`, `logstash_internal` and `kibana_system` users. Take note
-    of them.
+以下命令重置密码`elastic`, `logstash_internal`和`kibana_system`用户。请注意
+其中。
 
     ```sh
     docker compose exec elasticsearch bin/elasticsearch-reset-password --batch --user elastic
@@ -196,51 +196,51 @@ reset the passwords of all aforementioned Elasticsearch users to random secrets.
     docker compose exec elasticsearch bin/elasticsearch-reset-password --batch --user kibana_system
     ```
 
-    If the need for it arises (e.g. if you want to [collect monitoring information][ls-monitoring] through Beats and
-    other components), feel free to repeat this operation at any time for the rest of the [built-in
-    users][builtin-users].
+如果有需要（例如，如果您想通过 Beats 和 [收集监控信息][ls-monitoring]）
+其他组件），请随时重复此操作以完成其余的[内置
+用户][内置用户]。
 
-1. Replace usernames and passwords in configuration files
+1. 替换配置文件中的用户名和密码
 
-    Replace the password of the `elastic` user inside the `.env` file with the password generated in the previous step.
-    Its value isn't used by any core component, but [extensions](#how-to-enable-the-provided-extensions) use it to
-    connect to Elasticsearch.
+更换密码`elastic`用户里面的`.env`文件，其中包含上一步中生成的密码。
+它的值不被任何核心组件使用，但是[extensions](#how-to-enable-the-provided-extensions)用它来
+连接到 Elasticsearch。
 
-    > [!NOTE]
-    > In case you don't plan on using any of the provided [extensions](#how-to-enable-the-provided-extensions), or
-    > prefer to create your own roles and users to authenticate these services, it is safe to remove the
-    > `ELASTIC_PASSWORD` entry from the `.env` file altogether after the stack has been initialized.
+> [!注意]
+> 如果您不打算使用所提供的任何内容[extensions](#how-to-enable-the-provided-extensions)， 或者
+> 更喜欢创建自己的角色和用户来验证这些服务，删除
+    > `ELASTIC_PASSWORD`条目来自`.env`堆栈初始化后完全文件。
 
-    Replace the password of the `logstash_internal` user inside the `.env` file with the password generated in the
-    previous step. Its value is referenced inside the Logstash pipeline file (`logstash/pipeline/logstash.conf`).
+更换密码`logstash_internal`用户里面的`.env`文件中生成的密码
+上一步。它的值在 Logstash 管道文件中引用（`logstash/pipeline/logstash.conf`).
 
-    Replace the password of the `kibana_system` user inside the `.env` file with the password generated in the previous
-    step. Its value is referenced inside the Kibana configuration file (`kibana/config/kibana.yml`).
+更换密码`kibana_system`用户里面的`.env`文件包含之前生成的密码
+步。它的值在 Kibana 配置文件中引用（`kibana/config/kibana.yml`).
 
-    See the [Configuration](#configuration) section below for more information about these configuration files.
+请参阅[Configuration](#configuration)有关这些配置文件的更多信息，请参阅下面的部分。
 
-1. Restart Logstash and Kibana to re-connect to Elasticsearch using the new passwords
+1. 重新启动 Logstash 和 Kibana 以使用新密码重新连接到 Elasticsearch
 
     ```sh
     docker compose up -d logstash kibana
     ```
 
-> [!NOTE]
-> Learn more about the security of the Elastic stack at [Secure the Elastic Stack][sec-cluster].
+> [！笔记]
+> 要了解有关 Elastic Stack 安全性的更多信息，请访问 [Secure the Elastic Stack][sec-cluster]。
 
-#### Injecting data
+#### 注入数据
 
-Launch the Kibana web UI by opening <http://localhost:5601> in a web browser, and use the following credentials to log
-in:
+通过在 Web 浏览器中打开 <http://localhost:5601> 启动 Kibana Web UI，并使用以下凭据登录
+在：
 
-* user: *elastic*
-* password: *\<your generated elastic password>*
+* 用户：*弹性*
+* 密码：*\<您生成的弹性密码>*
 
-Now that the stack is fully configured, you can go ahead and inject some log entries.
+现在堆栈已完全配置，您可以继续注入一些日志条目。
 
-The shipped Logstash configuration allows you to send data over the TCP port 50000. For example, you can use one of the
-following commands — depending on your installed version of `nc` (Netcat) — to ingest the content of the log file
-`/path/to/logfile.log` in Elasticsearch, via Logstash:
+附带的 Logstash 配置允许您通过 TCP 端口 50000 发送数据。例如，您可以使用其中之一
+以下命令 - 取决于您安装的版本`nc`(Netcat) — 提取日志文件的内容
+`/path/to/logfile.log`在 Elasticsearch 中，通过 Logstash：
 
 ```sh
 # Execute `nc -h` to determine your `nc` version
@@ -250,49 +250,49 @@ cat /path/to/logfile.log | nc -c localhost 50000           # GNU
 cat /path/to/logfile.log | nc --send-only localhost 50000  # nmap
 ```
 
-You can also load the sample data provided by your Kibana installation.
+您还可以加载 Kibana 安装提供的示例数据。
 
-### Cleanup
+### 清理
 
-Elasticsearch data is persisted inside a volume by default.
+默认情况下，Elasticsearch 数据保留在卷内。
 
-In order to entirely shutdown the stack and remove all persisted data, use the following Docker Compose command:
+为了完全关闭堆栈并删除所有持久数据，请使用以下 Docker Compose 命令：
 
 ```sh
 docker compose --profile=setup down -v
 ```
 
-### Version selection
+### 版本选择
 
-This repository stays aligned with the latest version of the Elastic stack. The `main` branch tracks the current major
-version (9.x).
+该存储库与 Elastic stack 的最新版本保持一致。这`main`分支跟踪当前专业
+版本（9.x）。
 
-To use a different version of the core Elastic components, simply change the version number inside the [`.env`](.env)
-file. If you are upgrading an existing stack, remember to rebuild all container images using the `docker compose build`
-command.
+要使用核心 Elastic 组件的不同版本，只需更改内部的版本号[<<<CODE_148>>>](.env)
+文件。如果您要升级现有堆栈，请记住使用以下命令重建所有容器映像`docker compose build`
+命令。
 
-> [!IMPORTANT]
-> Always pay attention to the [official upgrade instructions][upgrade] for each individual component before performing a
-> stack upgrade.
+> [！重要的]
+> 在执行操作之前，请务必注意每个组件的[官方升级说明][升级]
+> 堆栈升级。
 
-Older major versions are also supported on separate branches:
+单独的分支也支持旧的主要版本：
 
-* [`release-8.x`](https://github.com/deviantony/docker-elk/tree/release-8.x): 8.x series
-* [`release-7.x`](https://github.com/deviantony/docker-elk/tree/release-7.x): 7.x series (End-of-Life)
-* [`release-6.x`](https://github.com/deviantony/docker-elk/tree/release-6.x): 6.x series (End-of-life)
-* [`release-5.x`](https://github.com/deviantony/docker-elk/tree/release-5.x): 5.x series (End-of-life)
+* [<<<CODE_150>>>](https://github.com/deviantony/docker-elk/tree/release-8.x)：8.x系列
+* [<<<CODE_151>>>](https://github.com/deviantony/docker-elk/tree/release-7.x)：7.x 系列（停产）
+* [<<<CODE_152>>>](https://github.com/deviantony/docker-elk/tree/release-6.x)：6.x 系列（停产）
+* [<<<CODE_153>>>](https://github.com/deviantony/docker-elk/tree/release-5.x)：5.x 系列（停产）
 
-## Configuration
+## 配置
 
-> [!IMPORTANT]
-> Configuration is not dynamically reloaded, you will need to restart individual components after any configuration
-> change.
+> [！重要的]
+> 配置不会动态重新加载，任何配置后您都需要重新启动各个组件
+> 改变。
 
-### How to configure Elasticsearch
+### 如何配置 Elasticsearch
 
-The Elasticsearch configuration is stored in [`elasticsearch/config/elasticsearch.yml`][config-es].
+Elasticsearch 配置存储在 [`elasticsearch/config/elasticsearch.yml`][配置-es]。
 
-You can also specify the options you want to override by setting environment variables inside the Compose file:
+您还可以通过在 Compose 文件中设置环境变量来指定要覆盖的选项：
 
 ```yml
 elasticsearch:
@@ -302,14 +302,14 @@ elasticsearch:
     cluster.name: my-cluster
 ```
 
-Please refer to the following documentation page for more details about how to configure Elasticsearch inside Docker
-containers: [Install Elasticsearch with Docker][es-docker].
+有关如何在 Docker 中配置 Elasticsearch 的更多详细信息，请参阅以下文档页面
+容器：[使用 Docker 安装 Elasticsearch][es-docker]。
 
-### How to configure Kibana
+### 如何配置 Kibana
 
-The Kibana default configuration is stored in [`kibana/config/kibana.yml`][config-kbn].
+Kibana 默认配置存储在 [`kibana/config/kibana.yml`][配置-kbn]。
 
-You can also specify the options you want to override by setting environment variables inside the Compose file:
+您还可以通过在 Compose 文件中设置环境变量来指定要覆盖的选项：
 
 ```yml
 kibana:
@@ -318,14 +318,14 @@ kibana:
     SERVER_NAME: kibana.example.org
 ```
 
-Please refer to the following documentation page for more details about how to configure Kibana inside Docker
-containers: [Install Kibana with Docker][kbn-docker].
+有关如何在 Docker 中配置 Kibana 的更多详细信息，请参阅以下文档页面
+容器：[使用 Docker 安装 Kibana][kbn-docker]。
 
-### How to configure Logstash
+### 如何配置 Logstash
 
-The Logstash configuration is stored in [`logstash/config/logstash.yml`][config-ls].
+Logstash配置存储在[`logstash/config/logstash.yml`][配置-ls]。
 
-You can also specify the options you want to override by setting environment variables inside the Compose file:
+您还可以通过在 Compose 文件中设置环境变量来指定要覆盖的选项：
 
 ```yml
 logstash:
@@ -334,29 +334,29 @@ logstash:
     LOG_LEVEL: debug
 ```
 
-Please refer to the following documentation page for more details about how to configure Logstash inside Docker
-containers: [Configuring Logstash for Docker][ls-docker].
+有关如何在 Docker 中配置 Logstash 的更多详细信息，请参阅以下文档页面
+容器：[为 Docker 配置 Logstash][ls-docker]。
 
-### How to disable paid features
+### 如何禁用付费功能
 
-You can cancel an ongoing trial before its expiry date — and thus revert to a basic license — either from the [License
-Management][license-mngmt] panel of Kibana, or using Elasticsearch's `start_basic` [Licensing API][license-apis]. Please
-note that the second option is the only way to recover access to Kibana if the license isn't either switched to `basic`
-or upgraded before the trial's expiry date.
+您可以在到期日期之前取消正在进行的试用 - 从而恢复到基本许可证 - 可以通过 [许可证
+Kibana的管理][license-mngmt]面板，或者使用Elasticsearch的`start_basic`[许可 API][许可证 API]。请
+请注意，如果许可证未切换到，第二个选项是恢复对 Kibana 访问的唯一方法`basic`
+或在试用期满之前升级。
 
-Changing the license type by switching the value of Elasticsearch's `xpack.license.self_generated.type` setting from
-`trial` to `basic` (see [License settings][license-settings]) will only work **if done prior to the initial setup.**
-After a trial has been started, the loss of features from `trial` to `basic` _must_ be acknowledged using one of the two
-methods described in the first paragraph.
+通过切换 Elasticsearch 的值来更改许可证类型`xpack.license.self_generated.type`设置从
+`trial`到`basic`（请参阅[许可证设置][许可证设置]）仅在**在初始设置之前完成后才有效。**
+试用开始后，功能丢失`trial`到`basic`_必须_使用两者之一进行确认
+第一段中描述的方法。
 
-### How to scale out the Elasticsearch cluster
+### 如何横向扩展Elasticsearch集群
 
-Follow the instructions from the Wiki: [Scaling out Elasticsearch](https://github.com/deviantony/docker-elk/wiki/Elasticsearch-cluster)
+按照 Wiki 中的说明进行操作：[Scaling out Elasticsearch](https://github.com/deviantony/docker-elk/wiki/Elasticsearch-cluster)
 
-### How to re-execute the setup
+### 如何重新执行设置
 
-To run the setup container again and re-initialize all users for which a password was defined inside the `.env` file,
-simply "up" the `setup` Compose service again:
+再次运行设置容器并重新初始化在其中定义密码的所有用户`.env`文件，
+简单地“向上”`setup`再次编写服务：
 
 ```console
 $ docker compose up setup
@@ -371,12 +371,12 @@ docker-elk-setup-1  |    ⠿ User exists, setting password
 docker-elk-setup-1 exited with code 0
 ```
 
-### How to reset a password programmatically
+### 如何以编程方式重置密码
 
-If for any reason your are unable to use Kibana to change the password of your users (including [built-in
-users][builtin-users]), you can use the Elasticsearch API instead and achieve the same result.
+如果出于任何原因您无法使用 Kibana 更改用户的密码（包括 [内置
+users][builtin-users]），您可以改用 Elasticsearch API 并获得相同的结果。
 
-In the example below, we reset the password of the `elastic` user (notice "/user/elastic" in the URL):
+在下面的例子中，我们重置了密码`elastic`用户（注意 URL 中的“/user/elastic”）：
 
 ```sh
 curl -XPOST -D- 'http://localhost:9200/_security/user/elastic/_password' \
@@ -385,42 +385,42 @@ curl -XPOST -D- 'http://localhost:9200/_security/user/elastic/_password' \
     -d '{"password" : "<your new password>"}'
 ```
 
-## Extensibility
+## 可扩展性
 
-### How to add plugins
+### 如何添加插件
 
-To add plugins to any ELK component you have to:
+要将插件添加到任何 ELK 组件，您必须：
 
-1. Add a `RUN` statement to the corresponding `Dockerfile` (eg. `RUN logstash-plugin install logstash-filter-json`)
-1. Add the associated plugin code configuration to the service configuration (eg. Logstash input/output)
-1. Rebuild the images using the `docker compose build` command
+1. 添加一个`RUN`对应的声明`Dockerfile`（例如。`RUN logstash-plugin install logstash-filter-json`)
+1. 将关联的插件代码配置添加到服务配置中（例如Logstash输入/输出）
+1. 使用以下命令重建图像`docker compose build`命令
 
-### How to enable the provided extensions
+### 如何启用提供的扩展
 
-A few extensions are available inside the [`extensions`](extensions) directory. These extensions provide features which
-are not part of the standard Elastic stack, but can be used to enrich it with extra integrations.
+里面有一些扩展可用[<<<CODE_171>>>](extensions)目录。这些扩展提供了以下功能
+不是标准 Elastic 堆栈的一部分，但可用于通过额外的集成来丰富它。
 
-The documentation for these extensions is provided inside each individual subdirectory, on a per-extension basis. Some
-of them require manual changes to the default ELK configuration.
+这些扩展的文档在每个单独的子目录中以每个扩展为基础提供。一些
+其中需要手动更改默认的 ELK 配置。
 
-## JVM tuning
+## JVM调优
 
-### How to specify the amount of memory used by a service
+### 如何指定服务使用的内存量
 
-The startup scripts for Elasticsearch and Logstash can append extra JVM options from the value of an environment
-variable, allowing the user to adjust the amount of memory that can be used by each component:
+Elasticsearch 和 Logstash 的启动脚本可以从环境值中附加额外的 JVM 选项
+变量，允许用户调整每个组件可以使用的内存量：
 
-| Service       | Environment variable |
+|服务 |环境变量|
 |---------------|----------------------|
-| Elasticsearch | ES_JAVA_OPTS         |
-| Logstash      | LS_JAVA_OPTS         |
+|弹性搜索 | ES_JAVA_OPTS | ES_JAVA_OPTS |
+|日志存储 | LS_JAVA_OPTS | LS_JAVA_OPTS |
 
-To accommodate environments where memory is scarce (Docker Desktop for Mac has only 2 GB available by default), the Heap
-Size allocation is capped by default in the `docker-compose.yml` file to 512 MB for Elasticsearch and 256 MB for
-Logstash. If you want to override the default JVM configuration, edit the matching environment variable(s) in the
-`docker-compose.yml` file.
+为了适应内存稀缺的环境（Mac 版 Docker Desktop 默认只有 2 GB 可用空间），堆
+默认情况下，大小分配有上限`docker-compose.yml`Elasticsearch 文件大小为 512 MB，Elasticsearch 文件大小为 256 MB
+日志存储。如果要覆盖默认 JVM 配置，请编辑匹配的环境变量
+`docker-compose.yml`文件。
 
-For example, to increase the maximum JVM Heap Size for Logstash:
+例如，要增加 Logstash 的最大 JVM 堆大小：
 
 ```yml
 logstash:
@@ -429,19 +429,19 @@ logstash:
     LS_JAVA_OPTS: -Xms1g -Xmx1g
 ```
 
-When these options are not set:
+当这些选项未设置时：
 
-* Elasticsearch starts with a JVM Heap Size that is [determined automatically][es-heap].
-* Logstash starts with a fixed JVM Heap Size of 1 GB.
+* Elasticsearch 从 [自动确定][es-heap] 的 JVM 堆大小开始。
+* Logstash 启动时的 JVM 堆大小固定为 1 GB。
 
-### How to enable a remote JMX connection to a service
+### 如何启用与服务的远程 JMX 连接
 
-As for the Java Heap memory (see above), you can specify JVM options to enable JMX and map the JMX port on the Docker
-host.
+至于Java堆内存（见上文），您可以指定JVM选项来启用JMX并将JMX端口映射到Docker上
+主持人。
 
-Update the `{ES,LS}_JAVA_OPTS` environment variable with the following content (I've mapped the JMX service on the port
-18080, you can change that). Do not forget to update the `-Djava.rmi.server.hostname` option with the IP address of your
-Docker host (replace **DOCKER_HOST_IP**):
+更新`{ES,LS}_JAVA_OPTS`具有以下内容的环境变量（我已将 JMX 服务映射到端口上
+18080，你可以改变它）。不要忘记更新`-Djava.rmi.server.hostname`选项与您的 IP 地址
+Docker 主机（替换 **DOCKER_HOST_IP**）：
 
 ```yml
 logstash:
@@ -450,50 +450,50 @@ logstash:
     LS_JAVA_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.port=18080 -Dcom.sun.management.jmxremote.rmi.port=18080 -Djava.rmi.server.hostname=DOCKER_HOST_IP -Dcom.sun.management.jmxremote.local.only=false
 ```
 
-## Going further
+## 更进一步
 
-### Plugins and integrations
+### 插件和集成
 
-See the following Wiki pages:
+请参阅以下 Wiki 页面：
 
 * [External applications](https://github.com/deviantony/docker-elk/wiki/External-applications)
 * [Popular integrations](https://github.com/deviantony/docker-elk/wiki/Popular-integrations)
 
-[elk-stack]: https://www.elastic.co/elastic-stack/
-[elastic-docker]: https://www.docker.elastic.co/
-[subscriptions]: https://www.elastic.co/subscriptions
-[es-security]: https://www.elastic.co/docs/reference/elasticsearch/configuration-reference/security-settings
-[license-settings]: https://www.elastic.co/docs/reference/elasticsearch/configuration-reference/license-settings
-[license-mngmt]: https://www.elastic.co/docs/deploy-manage/license/manage-your-license-in-self-managed-cluster
-[license-apis]: https://www.elastic.co/docs/api/doc/elasticsearch/group/endpoint-license
+[elk-stack]：https://www.elastic.co/elastic-stack/
+[弹性docker]：https://www.docker.elastic.co/
+[订阅]：https://www.elastic.co/subscriptions
+[es-security]：https://www.elastic.co/docs/reference/elasticsearch/configuration-reference/security-settings
+[许可证设置]：https://www.elastic.co/docs/reference/elasticsearch/configuration-reference/license-settings
+[许可证管理]：https://www.elastic.co/docs/deploy-manage/license/manage-your-license-in-self-management-cluster
+[许可证-api]：https://www.elastic.co/docs/api/doc/elasticsearch/group/endpoint-license
 
-[docker-install]: https://docs.docker.com/get-started/get-docker/
-[compose-install]: https://docs.docker.com/compose/install/
-[linux-postinstall]: https://docs.docker.com/engine/install/linux-postinstall/
-[desktop-filesharing]: https://docs.docker.com/desktop/settings-and-maintenance/settings/#file-sharing
+[docker安装]：https://docs.docker.com/get-started/get-docker/
+[撰写安装]：https://docs.docker.com/compose/install/
+[linux-postinstall]：https://docs.docker.com/engine/install/linux-postinstall/
+[桌面文件共享]：https://docs.docker.com/desktop/settings-and-maintenance/settings/#file-sharing
 
-[bootstrap-checks]: https://www.elastic.co/docs/deploy-manage/deploy/self-managed/bootstrap-checks
-[es-sys-config]: https://www.elastic.co/docs/deploy-manage/deploy/self-managed/important-system-configuration
-[es-heap]: https://www.elastic.co/docs/deploy-manage/deploy/self-managed/important-settings-configuration#heap-size-settings
+[引导检查]：https://www.elastic.co/docs/deploy-manage/deploy/self-management/bootstrap-checks
+[es-sys-config]：https://www.elastic.co/docs/deploy-manage/deploy/self-management/important-system-configuration
+[es-heap]：https://www.elastic.co/docs/deploy-manage/deploy/self-management/important-settings-configuration#heap-size-settings
 
-[builtin-users]: https://www.elastic.co/docs/deploy-manage/users-roles/cluster-or-deployment-auth/built-in-users
-[ls-monitoring]: https://www.elastic.co/docs/reference/logstash/monitoring-with-metricbeat
-[sec-cluster]: https://www.elastic.co/docs/deploy-manage/security#cluster-or-deployment-security-features
+[内置用户]：https://www.elastic.co/docs/deploy-manage/users-roles/cluster-or-deployment-auth/built-in-users
+[ls-monitoring]：https://www.elastic.co/docs/reference/logstash/monitoring-with-metricbeat
+[sec-cluster]：https://www.elastic.co/docs/deploy-manage/security#cluster-or-deployment-security-features
 
-[config-es]: ./elasticsearch/config/elasticsearch.yml
-[config-kbn]: ./kibana/config/kibana.yml
-[config-ls]: ./logstash/config/logstash.yml
+[config-es]：./elasticsearch/config/elasticsearch.yml
+[配置-kbn]：./kibana/config/kibana.yml
+[配置-ls]：./logstash/config/logstash.yml
 
-[es-docker]: https://www.elastic.co/docs/deploy-manage/deploy/self-managed/install-elasticsearch-with-docker
-[kbn-docker]: https://www.elastic.co/docs/deploy-manage/deploy/self-managed/install-kibana-with-docker
-[ls-docker]: https://www.elastic.co/docs/reference/logstash/docker-config
+[es-docker]：https://www.elastic.co/docs/deploy-manage/deploy/self-management/install-elasticsearch-with-docker
+[kbn-docker]：https://www.elastic.co/docs/deploy-manage/deploy/self-management/install-kibana-with-docker
+[ls-docker]：https://www.elastic.co/docs/reference/logstash/docker-config
 
-[upgrade]: https://www.elastic.co/docs/deploy-manage/upgrade/deployment-or-cluster/self-managed
+[升级]：https://www.elastic.co/docs/deploy-manage/upgrade/deployment-or-cluster/self-management
 
-<!-- markdownlint-configure-file
+<!-- markdownlint 配置文件
 {
-  "MD033": {
-    "allowed_elements": [ "picture", "source", "img" ]
+“MD033”：{
+“allowed_elements”：[“图片”，“来源”，“img”]
   }
 }
 -->
