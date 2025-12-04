@@ -1,4 +1,4 @@
-# Docker 上的弹性堆栈 (ELK)
+# Docker 上的Elastic Stack (ELK)
 
 [![Elastic Stack version](https://img.shields.io/badge/Elastic%20Stack-9.2.1-00bfb3?style=flat&logo=elastic-stack)](https://www.elastic.co/blog/category/releases)
 [![Build Status](https://github.com/deviantony/docker-elk/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/deviantony/docker-elk/actions/workflows/ci.yml?query=branch%3Amain)
